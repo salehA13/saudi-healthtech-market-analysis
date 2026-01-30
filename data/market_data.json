@@ -1,0 +1,74 @@
+{
+  "healthcare_market": {
+    "current_value_sar_b": 67.2,
+    "projected_2030_sar_b": 98.8,
+    "cagr_pct": 6.7,
+    "private_sector_share_current_pct": 40,
+    "private_sector_share_target_pct": 65,
+    "year_base": 2023,
+    "year_target": 2030
+  },
+  "market_sizing": {
+    "tam_sar_b": 2.94,
+    "sam_sar_m": 734,
+    "som_year5_sar_m": 73.4,
+    "admin_documentation_pct_of_spend": 3.0,
+    "sam_pct_of_tam": 25,
+    "som_pct_of_sam": 10
+  },
+  "claims_economics": {
+    "denial_rate_range_pct": [15, 25],
+    "denial_rate_avg_pct": 20,
+    "cost_per_denied_claim_sar": [150, 300],
+    "cost_per_denied_claim_avg_sar": 225,
+    "claims_per_hospital_year": [45000, 80000],
+    "target_denial_reduction_pct": 35
+  },
+  "hospitals": {
+    "total_private": 125,
+    "tier_1_large_groups": 15,
+    "tier_2_regional_chains": 30,
+    "tier_3_single_site": 45,
+    "tier_4_small_specialty": 35
+  },
+  "regional_distribution": {
+    "Riyadh": {"hospitals": 42, "pct": 34},
+    "Jeddah/Makkah": {"hospitals": 35, "pct": 28},
+    "Eastern Province": {"hospitals": 22, "pct": 18},
+    "Madinah": {"hospitals": 10, "pct": 8},
+    "Other": {"hospitals": 16, "pct": 12}
+  },
+  "revenue_forecast": {
+    "year_1": {"hospitals": 5, "arr_sar_m": 4.2},
+    "year_2": {"hospitals": 18, "arr_sar_m": 14.8},
+    "year_3": {"hospitals": 38, "arr_sar_m": 31.5},
+    "year_4": {"hospitals": 55, "arr_sar_m": 52.1},
+    "year_5": {"hospitals": 72, "arr_sar_m": 73.4}
+  },
+  "competitors": {
+    "Nuance/Microsoft": {
+      "arabic_nlp": 2, "nphies_integration": 1, "ai_depth": 9,
+      "local_presence": 3, "pricing_competitiveness": 4, "scalability": 9
+    },
+    "3M (Solventum)": {
+      "arabic_nlp": 2, "nphies_integration": 3, "ai_depth": 7,
+      "local_presence": 5, "pricing_competitiveness": 5, "scalability": 8
+    },
+    "Sahl AI": {
+      "arabic_nlp": 8, "nphies_integration": 8, "ai_depth": 6,
+      "local_presence": 9, "pricing_competitiveness": 7, "scalability": 5
+    },
+    "Nuxera": {
+      "arabic_nlp": 7, "nphies_integration": 7, "ai_depth": 5,
+      "local_presence": 8, "pricing_competitiveness": 7, "scalability": 4
+    },
+    "Nym Health": {
+      "arabic_nlp": 1, "nphies_integration": 1, "ai_depth": 8,
+      "local_presence": 1, "pricing_competitiveness": 6, "scalability": 7
+    },
+    "MedFlow (Target)": {
+      "arabic_nlp": 9, "nphies_integration": 9, "ai_depth": 8,
+      "local_presence": 9, "pricing_competitiveness": 8, "scalability": 7
+    }
+  }
+}

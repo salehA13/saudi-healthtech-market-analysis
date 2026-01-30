@@ -1,0 +1,46 @@
+hospital_group,tier,region,beds,annual_revenue_sar_m,claims_per_year,denial_rate_pct,digital_maturity,payer_mix_insurance_pct
+Sulaiman Al Habib,1,Riyadh,450,1200,95000,18,High,75
+Dr. Soliman Fakeeh,1,Jeddah/Makkah,400,950,82000,20,High,70
+Mouwasat Medical,1,Eastern Province,380,880,78000,19,High,72
+HMG (Habib Medical Group),1,Jeddah/Makkah,350,820,75000,22,High,68
+Dallah Health,1,Riyadh,320,780,70000,17,High,78
+Saudi German Hospital,1,Jeddah/Makkah,500,1100,90000,21,Medium-High,65
+Al Moosa Specialist,1,Eastern Province,280,650,58000,20,High,70
+CARE Hospitals,1,Riyadh,250,580,52000,19,Medium-High,72
+National Medical Care,1,Riyadh,300,720,65000,18,High,74
+Middle East Healthcare,1,Riyadh,270,620,55000,21,Medium-High,68
+Al Hammadi Hospital,1,Riyadh,220,520,48000,22,Medium-High,66
+Bugshan Hospital,1,Jeddah/Makkah,200,480,44000,20,Medium-High,70
+Al Mashfa Hospital,1,Eastern Province,190,440,40000,23,Medium,64
+Magrabi Hospital,1,Jeddah/Makkah,180,420,38000,19,High,72
+Specialized Medical Center,1,Riyadh,210,500,45000,20,Medium-High,69
+Riyadh Care Hospital,2,Riyadh,180,320,35000,22,Medium-High,65
+Al Noor Hospital,2,Jeddah/Makkah,170,300,32000,21,Medium,62
+Eastern Medical Center,2,Eastern Province,160,280,30000,23,Medium,60
+Madinah National Hospital,2,Madinah,150,260,28000,24,Medium,58
+Al Zahra Hospital,2,Madinah,140,240,26000,22,Medium,60
+Jeddah Clinic Hospital,2,Jeddah/Makkah,165,290,31000,20,Medium-High,65
+Al Salam Hospital Riyadh,2,Riyadh,155,270,29000,21,Medium,63
+Tadawi Medical Complex,2,Riyadh,145,250,27000,23,Medium,58
+Al Hayat Hospital,2,Jeddah/Makkah,135,230,25000,22,Medium,60
+Kingdom Hospital,2,Riyadh,175,310,33000,19,Medium-High,68
+Royal Specialist Hospital,2,Eastern Province,165,290,31000,21,Medium,62
+Imam Abdulrahman Hospital,2,Eastern Province,150,260,28000,24,Medium,56
+Andalusia Hospital,2,Jeddah/Makkah,140,240,26000,22,Medium-High,64
+Al Salam International,2,Jeddah/Makkah,130,220,24000,23,Medium,60
+North Medical Tower,2,Other,120,200,22000,25,Low-Medium,52
+Buraydah Private Hospital,2,Other,125,210,23000,24,Low-Medium,54
+Al Razi Hospital,2,Riyadh,160,280,30000,20,Medium,62
+Najran Private Hospital,2,Other,110,180,20000,25,Low-Medium,50
+Abha Private Hospital,2,Other,115,190,21000,24,Low-Medium,52
+Gulf Medical Hospital,2,Eastern Province,145,250,27000,22,Medium,60
+Dar Al Shifa Hospital,2,Jeddah/Makkah,130,220,24000,23,Medium,58
+Al Amal Hospital,2,Riyadh,140,240,26000,21,Medium,60
+Al Farabi Hospital,2,Riyadh,135,230,25000,22,Medium,62
+Jeddah National Hospital,2,Jeddah/Makkah,150,260,28000,20,Medium-High,66
+Saudi Center Hospital,2,Riyadh,125,210,23000,23,Medium,58
+Al Sharq Hospital,2,Eastern Province,130,220,24000,22,Medium,60
+Al Watan Hospital,2,Madinah,120,200,22000,24,Medium,56
+Taif Specialist Hospital,2,Other,115,190,21000,25,Low-Medium,52
+Al Qassim Hospital,2,Other,120,200,22000,24,Low-Medium,54
+Hail Private Hospital,2,Other,110,180,20000,25,Low-Medium,50
