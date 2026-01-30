@@ -258,8 +258,8 @@ jupyter notebook notebooks/full_analysis.ipynb
 
 <div align="center">
 
-*Analysis by [Saleh Alwahaimed](https://github.com/salehA13) · Strategy & Analytics*
+*By [Saleh Alkhudairy](https://github.com/salehA13)*
 
-*Built with Python, Matplotlib, Pandas, and domain expertise in Saudi healthcare.*
+*Built with Python, Matplotlib, and Pandas.*
 
 </div>
