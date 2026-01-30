@@ -2,6 +2,8 @@
 
 # 🏥 Saudi Healthtech Market Sizing & Entry Strategy
 
+![CI](https://github.com/salehA13/saudi-healthtech-market-analysis/actions/workflows/ci.yml/badge.svg)
+
 ### AI Clinical Documentation Tools — Market Opportunity Assessment
 
 ![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat-square&logo=python&logoColor=white)
