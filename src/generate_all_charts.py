@@ -1,10 +1,9 @@
 """
-Saudi Healthtech Market Analysis — Chart Generation
-====================================================
+Saudi Clinical Data Infrastructure — Market Analysis Chart Generation
+=====================================================================
 
-Generates all 9 visualizations for the market sizing & entry strategy
-deliverable. Charts follow a McKinsey/BCG-inspired design language for
-a consulting-grade portfolio presentation.
+Generates all 9 visualizations for the clinical data infrastructure
+market sizing & entry strategy deliverable.
 
 Usage:
     python src/generate_all_charts.py
@@ -34,54 +33,44 @@ import seaborn as sns
 # Configuration & Constants
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# McKinsey/BCG-inspired color palette
 COLORS: dict[str, str] = {
-    "primary":   "#1B2A4A",   # Deep navy
-    "secondary": "#2E5090",   # Royal blue
-    "accent":    "#E8792B",   # Warm orange
-    "accent2":   "#D4A843",   # Gold
-    "light":     "#F0F4F8",   # Light gray-blue
-    "success":   "#2D9A4E",   # Forest green
-    "text":      "#1D2530",   # Dark text
-    "muted":     "#7A8B9C",   # Muted text
-    "bg":        "#FFFFFF",   # White background
-    "grid":      "#E8ECF0",   # Light grid lines
+    "primary":   "#1B2A4A",
+    "secondary": "#2E5090",
+    "accent":    "#E8792B",
+    "accent2":   "#D4A843",
+    "light":     "#F0F4F8",
+    "success":   "#2D9A4E",
+    "text":      "#1D2530",
+    "muted":     "#7A8B9C",
+    "bg":        "#FFFFFF",
+    "grid":      "#E8ECF0",
 }
 
-# Hospital tier colors (Tier 1 → 4, dark → light)
 TIER_COLORS: list[str] = ["#1B2A4A", "#2E5090", "#5B8AC4", "#A3C4E8"]
-
-# Scenario colors: Conservative (green), Base (blue), Aggressive (orange)
 SCENARIO_COLORS: list[str] = ["#2D9A4E", "#2E5090", "#E8792B"]
 
-# Competitor colors for radar chart
 COMPETITOR_COLORS: dict[str, str] = {
-    "Nuance/Microsoft": "#4A90D9",
-    "3M (Solventum)":   "#7B7B7B",
-    "Sahl AI":          "#2D9A4E",
-    "Nuxera":           "#9B59B6",
-    "Nym Health":       "#E74C3C",
+    "LynxCare":         "#4A90D9",
+    "Savana":           "#7B7B7B",
+    "IOMED":            "#2D9A4E",
+    "Mendel":           "#9B59B6",
+    "IQVIA":            "#E74C3C",
     "MedFlow (Target)": "#E8792B",
 }
 
-# Region colors
 REGION_COLORS: list[str] = [
     COLORS["primary"], COLORS["secondary"], "#5B8AC4",
     COLORS["accent2"], COLORS["muted"],
 ]
 
-# Chart output settings
 CHART_DPI: int = 200
 CHART_FORMAT: str = "png"
 
-# Market assumptions
 HEALTHCARE_BASE_VALUE_SAR_B: float = 67.2
 HEALTHCARE_CAGR: float = 0.067
 PROJECTION_START_YEAR: int = 2023
 PROJECTION_END_YEAR: int = 2030
-DENIAL_REDUCTION_TARGET_PCT: float = 0.35
 
-# Hospital segmentation constants
 TIER_LABELS: list[str] = [
     "Tier 1\n(Large Groups)", "Tier 2\n(Regional Chains)",
     "Tier 3\n(Single Site)", "Tier 4\n(Small/Specialty)",
@@ -90,21 +79,15 @@ TIER_COUNTS: list[int] = [15, 30, 45, 35]
 TIER_AVG_BEDS: list[int] = [300, 150, 100, 35]
 TIER_AVG_REVENUE_SAR_M: list[int] = [800, 250, 150, 60]
 
-# Pricing model projections (SAR M, Years 1–5)
-PRICING_PER_ENCOUNTER: list[float] = [3.2, 12.1, 26.4, 43.8, 58.0]
-PRICING_PER_BED: list[float] = [2.8, 9.5, 20.1, 33.2, 43.0]
-PRICING_ENTERPRISE: list[float] = [5.5, 16.8, 34.2, 55.0, 72.0]
-
-# Denial economics scenarios
-DENIAL_SCENARIOS: list[str] = ["Conservative", "Base Case", "Aggressive"]
-DENIAL_RATES_PCT: list[int] = [15, 20, 25]
-COSTS_PER_DENIED_CLAIM_SAR: list[int] = [150, 225, 300]
-CLAIMS_PER_HOSPITAL_YEAR: list[int] = [45_000, 60_000, 80_000]
+# Pricing model projections (SAR M, Years 1–5) — Annual hospital contracts
+PRICING_ANNUAL_CONTRACT: list[float] = [5.6, 19.6, 48.0, 81.6, 120.0]
+PRICING_PER_SPECIALTY: list[float] = [3.2, 10.8, 25.2, 42.0, 58.0]
+PRICING_ENTERPRISE: list[float] = [8.0, 28.0, 62.0, 105.0, 155.0]
 
 # Radar chart capability dimensions
 RADAR_CATEGORIES: list[str] = [
-    "Arabic NLP", "NPHIES\nIntegration", "AI Depth",
-    "Local\nPresence", "Pricing", "Scalability",
+    "Clinical NLP", "OMOP\nExpertise", "Regional\nPresence",
+    "FHIR\nIntegration", "Pricing", "Scalability",
 ]
 
 
@@ -141,12 +124,6 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
 def load_market_data() -> dict[str, Any]:
-    """Load the market data JSON that drives all data-driven charts.
-
-    Returns:
-        Dictionary containing market sizing, competitor scores,
-        regional distribution, and revenue forecast data.
-    """
     data_path = os.path.join(DATA_DIR, "market_data.json")
     with open(data_path) as f:
         return json.load(f)
@@ -156,12 +133,6 @@ DATA: dict[str, Any] = load_market_data()
 
 
 def _save_chart(fig: plt.Figure, filename: str) -> None:
-    """Save a matplotlib figure to the output directory.
-
-    Args:
-        fig: The matplotlib Figure to save.
-        filename: Output filename (without directory path).
-    """
     fig.savefig(
         os.path.join(OUTPUT_DIR, filename),
         dpi=CHART_DPI,
@@ -177,39 +148,30 @@ def _save_chart(fig: plt.Figure, filename: str) -> None:
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 def generate_tam_sam_som() -> None:
-    """Generate the TAM/SAM/SOM concentric circle market sizing chart.
-
-    Visualizes the three-layer market sizing model:
-    - TAM (SAR 2.94B): Total addressable market for clinical documentation
-    - SAM (SAR 734M): Serviceable segment — private hospitals with >50 beds
-    - SOM (SAR 73.4M): Obtainable market within 5-year horizon
-    """
+    sizing = DATA["market_sizing"]
     fig, ax = plt.subplots(figsize=(10, 7))
 
     labels_data = [
-        ("TAM\nSAR 2.94B", "#D6E4F0"),
-        ("SAM\nSAR 734M", "#5B8AC4"),
-        ("SOM\nSAR 73.4M", "#1B2A4A"),
+        (f"TAM\nSAR {sizing['tam_sar_b']}B", "#D6E4F0"),
+        (f"SAM\nSAR {sizing['sam_sar_m']/1000:.1f}B", "#5B8AC4"),
+        (f"SOM\nSAR {sizing['som_year5_sar_m']}M", "#1B2A4A"),
     ]
 
-    # Draw concentric circles (largest first)
     for i, (_, color) in enumerate(labels_data):
         radius = 0.3 + (2 - i) * 0.25
         circle = plt.Circle((0.5, 0.45), radius, color=color, alpha=0.85 - i * 0.1)
         ax.add_patch(circle)
 
-    # Center label (SOM)
-    ax.text(0.5, 0.45, "SOM\nSAR 73.4M\n(Year 5 Target)", ha="center", va="center",
-            fontsize=13, fontweight="bold", color="white")
-    ax.text(0.5, 0.78, "SAM — SAR 734M", ha="center", va="center",
-            fontsize=12, fontweight="bold", color="white")
-    ax.text(0.5, 0.05, "TAM — SAR 2.94B", ha="center", va="center",
-            fontsize=12, fontweight="bold", color=COLORS["primary"])
+    ax.text(0.5, 0.45, f"SOM\nSAR {sizing['som_year5_sar_m']}M\n(Year 5 Target)",
+            ha="center", va="center", fontsize=13, fontweight="bold", color="white")
+    ax.text(0.5, 0.78, f"SAM — SAR {sizing['sam_sar_m']/1000:.1f}B",
+            ha="center", va="center", fontsize=12, fontweight="bold", color="white")
+    ax.text(0.5, 0.05, f"TAM — SAR {sizing['tam_sar_b']}B",
+            ha="center", va="center", fontsize=12, fontweight="bold", color=COLORS["primary"])
 
-    # Descriptions on right side
     descriptions: list[tuple[str, str, float]] = [
-        ("TAM", "All clinical documentation &\nclaims processing spend in KSA", 0.88),
-        ("SAM", "AI documentation tools for\nprivate hospitals with >50 beds", 0.72),
+        ("TAM", "Clinical data infrastructure\nspend across KSA healthcare", 0.88),
+        ("SAM", "Private hospitals with\nFHIR-enabled EMR systems", 0.72),
         ("SOM", "Realistically capturable\nin 5-year horizon", 0.45),
     ]
     for _, desc, y in descriptions:
@@ -223,7 +185,7 @@ def generate_tam_sam_som() -> None:
 
     fig.suptitle("Market Sizing: TAM / SAM / SOM", fontsize=16, fontweight="bold",
                  color=COLORS["primary"], y=0.97)
-    ax.text(0.5, 0.98, "AI Clinical Documentation Tools — Saudi Arabia",
+    ax.text(0.5, 0.98, "Clinical Data Infrastructure — Saudi Arabia",
             ha="center", va="top", fontsize=11, color=COLORS["muted"],
             transform=ax.transAxes)
 
@@ -237,11 +199,6 @@ def generate_tam_sam_som() -> None:
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 def generate_market_growth() -> None:
-    """Generate the Saudi healthcare market growth bar chart (2023–2030).
-
-    Projects total healthcare expenditure using the 6.7% CAGR from
-    MOH/Frost & Sullivan data, highlighting the 2030 Vision target.
-    """
     years = list(range(PROJECTION_START_YEAR, PROJECTION_END_YEAR + 1))
     values = [HEALTHCARE_BASE_VALUE_SAR_B * (1 + HEALTHCARE_CAGR) ** (y - PROJECTION_START_YEAR)
               for y in years]
@@ -250,7 +207,7 @@ def generate_market_growth() -> None:
 
     bars = ax.bar(years, values, color=COLORS["secondary"], width=0.6,
                   edgecolor="white", linewidth=0.5, zorder=3)
-    bars[-1].set_color(COLORS["accent"])  # Highlight 2030
+    bars[-1].set_color(COLORS["accent"])
 
     for bar, val in zip(bars, values):
         ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 1,
@@ -280,60 +237,77 @@ def generate_market_growth() -> None:
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# Chart 3: Claims Denial Economics
+# Chart 3: Hospital Data Readiness Assessment
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-def generate_denial_economics() -> None:
-    """Generate the claims denial economics dual-panel chart.
+def generate_data_maturity() -> None:
+    maturity = DATA["data_maturity"]
 
-    Left panel: Annual denial cost per hospital across three scenarios.
-    Right panel: Revenue recovery potential with 35% denial rate reduction.
-    Demonstrates the core value proposition for AI documentation tools.
-    """
-    annual_denial_cost = [
-        (rate / 100) * cost * claims / 1e6
-        for rate, cost, claims in zip(DENIAL_RATES_PCT, COSTS_PER_DENIED_CLAIM_SAR, CLAIMS_PER_HOSPITAL_YEAR)
+    categories = [
+        "Cannot query\nown clinical data",
+        "FHIR endpoint\nactive",
+        "Structured\nregistries",
+        "OMOP CDM\nadopted",
     ]
-    recovery = [x * DENIAL_REDUCTION_TARGET_PCT for x in annual_denial_cost]
+    values = [
+        maturity["hospitals_cannot_query_own_data_pct"],
+        maturity["hospitals_with_fhir_endpoint_pct"],
+        maturity["hospitals_with_structured_registries_pct"],
+        maturity["hospitals_with_omop_pct"],
+    ]
+    bar_colors = ["#E8792B", "#2E5090", "#2D9A4E", "#1B2A4A"]
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
-    # Left: Annual denial cost
-    bars1 = ax1.bar(DENIAL_SCENARIOS, annual_denial_cost, color=SCENARIO_COLORS,
-                    width=0.5, edgecolor="white", zorder=3)
-    for bar, val in zip(bars1, annual_denial_cost):
-        ax1.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.08,
-                 f"SAR {val:.2f}M", ha="center", va="bottom", fontsize=11,
-                 fontweight="bold", color=COLORS["text"])
+    # Left: Bar chart — data readiness gap
+    bars = ax1.barh(categories, values, color=bar_colors, height=0.55, edgecolor="white", zorder=3)
+    for bar, val in zip(bars, values):
+        ax1.text(bar.get_width() + 2, bar.get_y() + bar.get_height() / 2,
+                 f"{val}%", va="center", fontsize=13, fontweight="bold",
+                 color=COLORS["text"])
 
-    ax1.set_ylabel("Annual Cost (SAR Million)", fontweight="bold")
-    ax1.set_title("Annual Denial Cost per Hospital", fontsize=13, fontweight="bold",
+    ax1.set_xlabel("Percentage of Private Hospitals", fontweight="bold")
+    ax1.set_title("Data Readiness Gap", fontsize=13, fontweight="bold",
                   color=COLORS["primary"], pad=10)
-    ax1.set_ylim(0, max(annual_denial_cost) * 1.3)
+    ax1.set_xlim(0, 105)
     ax1.spines["top"].set_visible(False)
     ax1.spines["right"].set_visible(False)
 
-    # Right: Recovery potential
-    bars2 = ax2.bar(DENIAL_SCENARIOS, recovery, color=SCENARIO_COLORS,
-                    width=0.5, edgecolor="white", zorder=3)
-    for bar, val in zip(bars2, recovery):
-        ax2.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.03,
-                 f"SAR {val:.2f}M", ha="center", va="bottom", fontsize=11,
-                 fontweight="bold", color=COLORS["text"])
+    # Right: Stacked bar showing opportunity
+    opportunity_labels = ["Queryable\n(OMOP)", "Structured but\nnot queryable", "Unstructured\n(opportunity)"]
+    opportunity_vals = [
+        maturity["hospitals_with_omop_pct"],
+        maturity["hospitals_with_structured_registries_pct"] - maturity["hospitals_with_omop_pct"],
+        100 - maturity["hospitals_with_structured_registries_pct"],
+    ]
+    opportunity_colors = ["#1B2A4A", "#2D9A4E", "#E8792B"]
 
-    ax2.set_ylabel("Annual Recovery (SAR Million)", fontweight="bold")
-    ax2.set_title(f"Revenue Recovery with {int(DENIAL_REDUCTION_TARGET_PCT * 100)}% Denial Reduction",
-                  fontsize=13, fontweight="bold", color=COLORS["primary"], pad=10)
-    ax2.set_ylim(0, max(recovery) * 1.3)
+    bottom = 0
+    for val, color, label in zip(opportunity_vals, opportunity_colors, opportunity_labels):
+        ax2.bar(0, val, bottom=bottom, color=color, width=0.5, edgecolor="white",
+                label=label, zorder=3)
+        if val > 5:
+            ax2.text(0, bottom + val / 2, f"{val}%", ha="center", va="center",
+                    fontsize=12, fontweight="bold", color="white")
+        bottom += val
+
+    ax2.set_ylabel("Percentage of Hospitals", fontweight="bold")
+    ax2.set_title("Clinical Data Structuring Opportunity", fontsize=13, fontweight="bold",
+                  color=COLORS["primary"], pad=10)
+    ax2.set_ylim(0, 105)
+    ax2.set_xlim(-0.5, 0.5)
+    ax2.set_xticks([])
     ax2.spines["top"].set_visible(False)
     ax2.spines["right"].set_visible(False)
+    ax2.spines["bottom"].set_visible(False)
+    ax2.legend(fontsize=10, loc="upper right", frameon=True, edgecolor=COLORS["grid"])
 
-    fig.suptitle("Claims Denial Economics — Per Hospital Analysis", fontsize=15,
+    fig.suptitle("Hospital Clinical Data Maturity — Saudi Arabia", fontsize=15,
                  fontweight="bold", color=COLORS["primary"], y=1.02)
 
     plt.tight_layout()
-    _save_chart(fig, "denial_economics.png")
-    print("  ✓ Denial economics chart")
+    _save_chart(fig, "data_maturity.png")
+    print("  ✓ Data maturity chart")
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -341,12 +315,6 @@ def generate_denial_economics() -> None:
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 def generate_competitive_radar() -> None:
-    """Generate the competitive capability radar chart.
-
-    Plots 6 capability dimensions for all market participants including
-    the target positioning (MedFlow). Highlights the strategic gap in
-    Arabic NLP + NPHIES integration that no incumbent fills.
-    """
     competitors: dict[str, dict[str, int]] = DATA["competitors"]
     n_categories = len(RADAR_CATEGORIES)
 
@@ -356,8 +324,8 @@ def generate_competitive_radar() -> None:
     fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(polar=True))
 
     capability_keys = [
-        "arabic_nlp", "nphies_integration", "ai_depth",
-        "local_presence", "pricing_competitiveness", "scalability",
+        "clinical_nlp", "omop_expertise", "regional_presence",
+        "fhir_integration", "pricing_competitiveness", "scalability",
     ]
 
     for name, scores in competitors.items():
@@ -366,7 +334,7 @@ def generate_competitive_radar() -> None:
 
         is_target = name == "MedFlow (Target)"
         line_width = 3 if is_target else 1.5
-        fill_alpha = 0.15 if is_target else 0.05
+        fill_alpha = 0.18 if is_target else 0.05
 
         ax.plot(angles, values, "o-", linewidth=line_width, label=name,
                 color=COMPETITOR_COLORS[name])
@@ -394,12 +362,6 @@ def generate_competitive_radar() -> None:
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 def generate_hospital_segmentation() -> None:
-    """Generate the hospital segmentation dual-panel chart.
-
-    Left panel: Horizontal bar chart of hospital counts by tier.
-    Right panel: Bubble scatter showing revenue and scale by tier,
-    with bubble size proportional to average bed count.
-    """
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
     # Left: Hospital count by tier
@@ -417,7 +379,7 @@ def generate_hospital_segmentation() -> None:
     ax1.spines["right"].set_visible(False)
     ax1.invert_yaxis()
 
-    # Right: Revenue opportunity (bubble scatter)
+    # Right: Revenue opportunity
     bubble_scale_factor = 5
     x_pos = list(range(len(TIER_LABELS)))
     ax2.scatter(x_pos, TIER_AVG_REVENUE_SAR_M,
@@ -452,12 +414,6 @@ def generate_hospital_segmentation() -> None:
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 def generate_regional_distribution() -> None:
-    """Generate the regional distribution dual-panel chart.
-
-    Left panel: Bar chart of hospital counts by region.
-    Right panel: Donut chart showing market concentration across
-    Saudi Arabia's five major healthcare regions.
-    """
     regional_data = DATA["regional_distribution"]
     regions = list(regional_data.keys())
     hospitals = [regional_data[r]["hospitals"] for r in regions]
@@ -466,7 +422,6 @@ def generate_regional_distribution() -> None:
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 6),
                                     gridspec_kw={"width_ratios": [1.2, 1]})
 
-    # Bar chart
     bars = ax1.bar(regions, hospitals, color=REGION_COLORS, width=0.6,
                    edgecolor="white", zorder=3)
     for bar, val, pct in zip(bars, hospitals, pcts):
@@ -481,7 +436,6 @@ def generate_regional_distribution() -> None:
     ax1.spines["top"].set_visible(False)
     ax1.spines["right"].set_visible(False)
 
-    # Donut chart
     wedges, texts, autotexts = ax2.pie(
         hospitals, labels=regions, colors=REGION_COLORS,
         autopct="%1.0f%%", startangle=90,
@@ -513,12 +467,6 @@ def generate_regional_distribution() -> None:
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 def generate_pricing_scenarios() -> None:
-    """Generate the pricing scenario comparison grouped bar chart.
-
-    Compares three pricing models (per-encounter, per-bed, enterprise
-    license) across the 5-year forecast horizon, with Year 5 revenue
-    labels and a recommendation callout for the hybrid approach.
-    """
     fig, ax = plt.subplots(figsize=(12, 6))
 
     year_labels = ["Year 1", "Year 2", "Year 3", "Year 4", "Year 5"]
@@ -526,16 +474,15 @@ def generate_pricing_scenarios() -> None:
     width = 0.25
 
     models = [
-        (PRICING_PER_ENCOUNTER, "Per Encounter (SAR 8-15/enc)"),
-        (PRICING_PER_BED, "Per Bed (SAR 500-1,200/bed/mo)"),
-        (PRICING_ENTERPRISE, "Enterprise License (SAR 1.5-4M/yr)"),
+        (PRICING_PER_SPECIALTY, "Per-Specialty PoC (SAR 50-100K/dept)"),
+        (PRICING_ANNUAL_CONTRACT, "Annual Hospital Contract (SAR 500K-1.5M)"),
+        (PRICING_ENTERPRISE, "Enterprise License (SAR 2-5M/yr)"),
     ]
 
     for i, (data, label) in enumerate(models):
         offset = (i - 1) * width
         bars = ax.bar(x + offset, data, width, label=label,
                       color=SCENARIO_COLORS[i], edgecolor="white", zorder=3)
-        # Label Year 5 value
         last_bar = bars[-1]
         ax.text(last_bar.get_x() + last_bar.get_width() / 2,
                 last_bar.get_height() + 1,
@@ -552,8 +499,8 @@ def generate_pricing_scenarios() -> None:
     ax.spines["right"].set_visible(False)
     ax.legend(fontsize=10, frameon=True, edgecolor=COLORS["grid"], loc="upper left")
 
-    ax.annotate("Recommended: Hybrid\n(Per Encounter + Per Bed)",
-                xy=(4, 58), fontsize=10, fontweight="bold", color=COLORS["accent"],
+    ax.annotate("Recommended: Annual\nHospital Contract",
+                xy=(4, 120), fontsize=10, fontweight="bold", color=COLORS["accent"],
                 ha="center", va="bottom",
                 bbox=dict(boxstyle="round,pad=0.5", facecolor="#FFF3E8",
                           edgecolor=COLORS["accent"]))
@@ -568,11 +515,6 @@ def generate_pricing_scenarios() -> None:
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 def generate_revenue_forecast() -> None:
-    """Generate the revenue forecast bar + line combo chart.
-
-    Combines ARR bars (left axis) with hospital adoption line (right axis)
-    to show the dual growth trajectory. YoY growth rates annotated below bars.
-    """
     forecast = DATA["revenue_forecast"]
     year_labels = ["Year 1", "Year 2", "Year 3", "Year 4", "Year 5"]
     hospitals = [forecast[f"year_{i}"]["hospitals"] for i in range(1, 6)]
@@ -580,7 +522,6 @@ def generate_revenue_forecast() -> None:
 
     fig, ax1 = plt.subplots(figsize=(11, 6))
 
-    # Revenue bars
     bars = ax1.bar(year_labels, arr, color=COLORS["secondary"], width=0.5,
                    edgecolor="white", zorder=3, alpha=0.9)
     bars[-1].set_color(COLORS["accent"])
@@ -596,7 +537,6 @@ def generate_revenue_forecast() -> None:
     ax1.spines["top"].set_visible(False)
     ax1.spines["right"].set_visible(False)
 
-    # Hospital adoption line (secondary axis)
     ax2 = ax1.twinx()
     ax2.plot(year_labels, hospitals, "o-", color=COLORS["accent"],
              linewidth=2.5, markersize=8, zorder=4)
@@ -612,7 +552,7 @@ def generate_revenue_forecast() -> None:
                   fontweight="bold", color=COLORS["primary"], pad=15)
 
     # YoY growth rates
-    growth_labels = ["—", "252%", "113%", "65%", "41%"]
+    growth_labels = ["—", "250%", "145%", "70%", "47%"]
     for i, g in enumerate(growth_labels):
         if g != "—":
             ax1.text(i, -5, f"+{g}", ha="center", fontsize=9,
@@ -628,21 +568,15 @@ def generate_revenue_forecast() -> None:
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 def generate_unit_economics() -> None:
-    """Generate the unit economics KPI dashboard card grid.
-
-    Displays six key SaaS metrics in a 2×3 card layout:
-    CAC, ACV, LTV, LTV:CAC ratio, gross margin, and net revenue retention.
-    Each card includes the metric value, name, and contextual description.
-    """
     fig, axes = plt.subplots(2, 3, figsize=(14, 8))
 
     metrics: list[tuple[str, str, float, str, str]] = [
-        ("CAC", "SAR 180K", 180, "Cost to acquire\none hospital", COLORS["accent"]),
-        ("ACV", "SAR 1.02M", 1020, "Average contract\nvalue per year", COLORS["secondary"]),
-        ("LTV", "SAR 4.1M", 4100, "Lifetime value\n(4-year avg.)", COLORS["success"]),
-        ("LTV:CAC", "22.8x", 22.8, "Strong unit\neconomics", COLORS["primary"]),
-        ("Gross Margin", "82%", 82, "Software-like\nmargins", COLORS["success"]),
-        ("NRR", "135%", 135, "Net revenue\nretention", COLORS["accent2"]),
+        ("CAC", "SAR 200K", 200, "Cost to acquire\none hospital", COLORS["accent"]),
+        ("ACV", "SAR 1.4M", 1400, "Average contract\nvalue per year", COLORS["secondary"]),
+        ("LTV", "SAR 3.7M", 3700, "Lifetime value\n(3-year avg.)", COLORS["success"]),
+        ("LTV:CAC", "18.5x", 18.5, "Strong unit\neconomics", COLORS["primary"]),
+        ("Gross Margin", "78%", 78, "Infrastructure\nmargins", COLORS["success"]),
+        ("NRR", "130%", 130, "Net revenue\nretention", COLORS["accent2"]),
     ]
 
     for ax, (name, value, _, desc, color) in zip(axes.flat, metrics):
@@ -676,7 +610,7 @@ def generate_unit_economics() -> None:
 CHART_GENERATORS: list[tuple[str, callable]] = [
     ("TAM/SAM/SOM",           generate_tam_sam_som),
     ("Market Growth",         generate_market_growth),
-    ("Denial Economics",      generate_denial_economics),
+    ("Data Maturity",         generate_data_maturity),
     ("Competitive Radar",     generate_competitive_radar),
     ("Hospital Segmentation", generate_hospital_segmentation),
     ("Regional Distribution", generate_regional_distribution),
@@ -687,7 +621,7 @@ CHART_GENERATORS: list[tuple[str, callable]] = [
 
 
 if __name__ == "__main__":
-    print("\n🏥 Saudi Healthtech Market Analysis — Generating Charts\n")
+    print("\n🏥 Saudi Clinical Data Infrastructure — Generating Charts\n")
     print(f"Output directory: {OUTPUT_DIR}\n")
 
     for _, generator in CHART_GENERATORS:
