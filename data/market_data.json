@@ -9,10 +9,9 @@
     "year_target": 2030
   },
   "market_sizing": {
-    "tam_sar_b": 4.8,
-    "sam_sar_m": 1200,
-    "som_year5_sar_m": 120,
-    "healthcare_it_pct_of_spend": 4.8,
+    "tam_sar_b": 3.5,
+    "sam_sar_m": 875,
+    "som_year5_sar_m": 87,
     "sam_pct_of_tam": 25,
     "som_pct_of_sam": 10
   },
@@ -23,13 +22,6 @@
     "tier_3_single_site": 45,
     "tier_4_small_specialty": 35
   },
-  "data_maturity": {
-    "hospitals_cannot_query_own_data_pct": 87,
-    "hospitals_with_fhir_endpoint_pct": 35,
-    "hospitals_with_structured_registries_pct": 8,
-    "hospitals_with_omop_pct": 2,
-    "nphies_mandate_year": 2024
-  },
   "regional_distribution": {
     "Riyadh": {"hospitals": 42, "pct": 34},
     "Jeddah/Makkah": {"hospitals": 35, "pct": 28},
@@ -38,36 +30,10 @@
     "Other": {"hospitals": 16, "pct": 12}
   },
   "revenue_forecast": {
-    "year_1": {"hospitals": 4, "arr_sar_m": 5.6},
-    "year_2": {"hospitals": 14, "arr_sar_m": 19.6},
-    "year_3": {"hospitals": 30, "arr_sar_m": 48.0},
-    "year_4": {"hospitals": 48, "arr_sar_m": 81.6},
-    "year_5": {"hospitals": 65, "arr_sar_m": 120.0}
-  },
-  "competitors": {
-    "LynxCare": {
-      "clinical_nlp": 9, "omop_expertise": 9, "regional_presence": 1,
-      "fhir_integration": 7, "pricing_competitiveness": 3, "scalability": 8
-    },
-    "Savana": {
-      "clinical_nlp": 9, "omop_expertise": 7, "regional_presence": 2,
-      "fhir_integration": 6, "pricing_competitiveness": 4, "scalability": 8
-    },
-    "IOMED": {
-      "clinical_nlp": 8, "omop_expertise": 8, "regional_presence": 1,
-      "fhir_integration": 7, "pricing_competitiveness": 4, "scalability": 6
-    },
-    "Mendel": {
-      "clinical_nlp": 8, "omop_expertise": 5, "regional_presence": 1,
-      "fhir_integration": 4, "pricing_competitiveness": 5, "scalability": 7
-    },
-    "IQVIA": {
-      "clinical_nlp": 6, "omop_expertise": 5, "regional_presence": 7,
-      "fhir_integration": 4, "pricing_competitiveness": 2, "scalability": 9
-    },
-    "MedFlow (Target)": {
-      "clinical_nlp": 8, "omop_expertise": 9, "regional_presence": 9,
-      "fhir_integration": 9, "pricing_competitiveness": 8, "scalability": 7
-    }
+    "year_1": {"hospitals": 5, "arr_sar_m": 4.5},
+    "year_2": {"hospitals": 16, "arr_sar_m": 14.4},
+    "year_3": {"hospitals": 32, "arr_sar_m": 35.2},
+    "year_4": {"hospitals": 50, "arr_sar_m": 62.5},
+    "year_5": {"hospitals": 68, "arr_sar_m": 87.0}
   }
 }
